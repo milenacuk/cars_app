@@ -22,6 +22,7 @@
       <td>{{car.isAutomatic}}</td>
       <td>{{car.engine}}</td>
       <td>{{car.numberOfDoors}}</td>
+       <td><router-link class='nav-link' :to="{name:'edit-car', params: {id:car.id}}">Edit</router-link></td>
       
     </tr>
     
@@ -47,7 +48,7 @@ export default {
             this.cars = response.data;
         })
         .catch(error => {
-            this.cars = error.response;
+            console.log(error.response);
         })
     }
 }

@@ -1,5 +1,5 @@
 <template>
-<form @submit.prevent='addCar'>
+<form @submit.prevent='submit'>
     <div>   
         <br>     
     <label>Brand </label>
@@ -27,7 +27,7 @@
         <label>Hybrid </label>     
             <input name = 'engine' type="radio" value='hybrid' v-model='newCar.engine' required> <br>       
     </div>
-    <input class="btn btn-primary" type="submit" value="Submit">
+    <button class="btn btn-primary" type="submit" >Submit</button>
     <input  type='button' @click.stop.prevent="resetForm" value='Reset'>
     <div>
     <input type = "button" @click='previewForm' value='Preview'>
@@ -38,6 +38,21 @@
 <script>
 import { carsService } from '../utils/CarsService.js'
 export default {
+    created (){
+        if (this.$route.params.id) {
+            carsService.get(this.$route.params.id)
+                .then(response => {
+                    console.log(response);
+                    this.car = response.data
+                    this.newCar = response.data;
+                })
+                .catch(error => {
+                    console.log(error.response.data);
+                })
+        }
+    },
+    
+    
     data(){
         return{
             newCar: {
@@ -47,10 +62,20 @@ export default {
         }
     },
     methods: {
+        submit(){
+            if(this.$route.params.id){
+                this.editCar();
+            }
+            else{
+                this.addCar();
+            }
+        },
         addCar(){
-            carsService.add(this.newCar);
-            this.newCar ={};
-            this.$router.push('cars');
+            carsService.add(this.newCar)
+                .then(() => {
+                    this.newCar ={};
+                    this.$router.push('/cars');
+                });
         },
         resetForm(){
             this.newCar ={};
@@ -59,6 +84,10 @@ export default {
             var car = (JSON.stringify(this.newCar));
             var array = JSON.parse(car);
             alert(`Brand:${ array.brand }\nModel:${ array.model }\nMax Speed:${ array.maxSpeed }\nNumber Of Doors"${ array.numberOfDoors }\nYear:${ array.year }\n${ array.isAutomatic ? 'Automatic' : 'Manual' }\nEngine:${ array.engine }`);
+        },
+        editCar(){
+            carsService.edit(this.$route.params.id, this.newCar)
+                .then(() => this.$router.push('/cars'));
         }
     }
 }
