@@ -47,7 +47,7 @@ export default {
             this.cars = response.data;
         })
         .catch(error => {
-            console.log(error.response)
+            this.cars = error.response;
         })
     }
 }
