@@ -22,8 +22,8 @@
       <td>{{car.isAutomatic}}</td>
       <td>{{car.engine}}</td>
       <td>{{car.numberOfDoors}}</td>
-       <td><router-link class='nav-link' :to="{name:'edit-car', params: {id:car.id}}">Edit</router-link></td>
-      
+      <td><router-link class='nav-link' :to="{name:'edit-car', params: {id:car.id}}">Edit</router-link></td>
+      <button @click="deleteButton(id)">Delete</button>
     </tr>
     
   </tbody>
@@ -50,6 +50,13 @@ export default {
         .catch(error => {
             console.log(error.response);
         })
+    },
+    method: {
+        deleteButton(id){
+               
+            carsService.delete(id);
+            
+        }
     }
 }
 </script>
